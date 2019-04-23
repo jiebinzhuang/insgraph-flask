@@ -1,0 +1,6 @@
+include LICENSE
+include insgraph/schema.sql
+graft insgraph/static
+graft insgraph/templates
+graft tests
+global-exclude *.pyc
