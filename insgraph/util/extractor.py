@@ -17,8 +17,8 @@ from .util import web_adress_navigator
 def get_user_info(browser, username):
     """Get the basic user info from the profile screen"""
     num_of_posts = 0
-    followers = { 'count' : 0}
-    following = { 'count' : 0}
+    followers = {'count': 0}
+    following = {'count': 0}
     prof_img = ""
     bio = ""
     bio_url = ""
@@ -61,32 +61,17 @@ def get_user_info(browser, username):
         except:
             logger.error("Number of Posts empty")
 
-
         try:
-            following = { 'count' : extract_exact_info(infos[2])}
+            following = extract_exact_info(infos[2])
         except:
             logger.error("Following is empty")
 
         try:
-            followers = { 'count' : extract_exact_info(infos[1])}
-
-            try:
-                if Settings.scrape_follower == True:
-                    if isprivate == True:
-                        logger.info("Cannot get Follower List - private account")
-                    else:
-                        followers['list'] = extract_followers(browser, username)
-            except Exception as exception:
-                # Output unexpected Exceptions.
-                print("Unexpected error:", sys.exc_info()[0])
-                print(exception)
-
-                logger.error("Cannot get Follower List")
+            followers = extract_exact_info(infos[1])
         except:
             logger.error("Follower is empty")
     except:
         logger.error("Infos (Following, Abo, Posts) is empty")
-
 
     information = {
         'alias': alias,
@@ -104,7 +89,7 @@ def get_user_info(browser, username):
     logger.info("bio: " + information['bio'])
     logger.info("url: " + information['bio_url'])
     logger.info("Posts: " + str(information['num_of_posts']))
-    logger.info("Follower: " + str(information['followers']['count']))
+    logger.info("Follower: " + str(information['followers']))
     logger.info("Following: " + str(information['following']))
     logger.info("isPrivate: " + str(information['isprivate']))
     return information
@@ -334,11 +319,11 @@ def extract_user_posts(browser, num_of_posts_to_do):
 
 
 def extract_information(browser, username, limit_amount):
-    #print 222
-    #print username
+    # print 222
+    # print username
 
     logger.info("Extracting information from " + username)
-    #print 123
+    # print 123
     """Get all the information for the given username"""
     isprivate = False
     try:
@@ -349,7 +334,6 @@ def extract_information(browser, username, limit_amount):
 
     num_of_posts_to_do = 999999
 
-
     try:
         userinfo = get_user_info(browser, username)
         if limit_amount < 1:
@@ -358,7 +342,6 @@ def extract_information(browser, username, limit_amount):
     except Exception as err:
         logger.error("Couldn't get user profile. - Terminating")
         quit()
-
 
     prev_divs = browser.find_elements_by_class_name('_70iju')
 
@@ -392,3 +375,42 @@ def extract_information(browser, username, limit_amount):
             last = user_commented_total_list[i]
 
     return userinfo, user_commented_list
+
+
+def extract_userinfo(browser, username):
+    logger.info("Extracting information from " + username)
+    """Get all the information for the given username"""
+    try:
+        user_link = "https://www.instagram.com/{}/".format(username)
+        web_adress_navigator(browser, user_link)
+    except PageNotFound404 as e:
+        raise NoInstaProfilePageFound(e)
+
+    userinfo = get_user_info(browser, username)
+    userinfo['scraped'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    return userinfo
+
+
+
+def extract_posts(browser, username, limit_amount):
+    # print 222
+    # print username
+
+    logger.info("Extracting extract_posts from " + username)
+    # print 123
+    isprivate = False
+    try:
+        user_link = "https://www.instagram.com/{}/".format(username)
+        web_adress_navigator(browser, user_link)
+    except PageNotFound404 as e:
+        raise NoInstaProfilePageFound(e)
+
+    try:
+        post_infos, user_commented_total_list = extract_user_posts(browser, limit_amount)
+    except:
+            logger.error("Couldn't get user posts.")
+
+
+
+    return post_infos
