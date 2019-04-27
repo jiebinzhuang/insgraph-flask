@@ -66,7 +66,7 @@ def getPostList():
         from insgraph.util.settings import Settings
         if len(Settings.login_username) != 0:
             login(browser, Settings.login_username, Settings.login_password)
-        post_infos = extract_posts(browser, username, amount)
+        post_infos = extract_posts(browser, username, int(amount))
     except:
         print("Error with user " + username)
         sys.exit(1)

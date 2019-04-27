@@ -86,7 +86,6 @@ def extract_post_info(browser, postlink):
         logger.error(str(err))
 
     likes = 0
-
     try:
         # if len(post.find_elements_by_xpath('//article/div/section')) > 2:
         # image or video post?
@@ -118,6 +117,17 @@ def extract_post_info(browser, postlink):
         logger.error("ERROR - Extracting number of likes failed. Saving likes as -1")
         logger.error(err)
         likes = -1
+
+    videourl=''
+    try:
+        # video
+        videourl = post.find_element_by_xpath('/html/head/meta[@property=\'og:video\']').get_attribute("content")
+        logger.info("post videourl: " + videourl)
+    except Exception as err:
+        logger.error("ERROR - Getting video url  ")
+        logger.error(err)
+    # if likes is not known, it would cause errors to convert empty string to int
+
 
     user_comments = []
     user_commented_list = []
@@ -151,7 +161,8 @@ def extract_post_info(browser, postlink):
         logger.error("ERROR - getting Post Likers function")
 
     return caption, location_url, location_name, location_id, lat, lng, imgs, imgdesc, tags, int(
-        likes), commentscount, date, user_commented_list, user_comments, mentions, user_liked_list, views
+        likes), commentscount, date, user_commented_list, user_comments, mentions, user_liked_list, views,videourl
+
 
 
 def extract_post_mentions(browser, post):

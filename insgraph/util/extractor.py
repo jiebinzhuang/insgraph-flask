@@ -278,7 +278,7 @@ def extract_user_posts(browser, num_of_posts_to_do):
         counter = counter + 1
 
         try:
-            caption, location_url, location_name, location_id, lat, lng, imgs, imgdesc, tags, likes, commentscount, date, user_commented_list, user_comments, mentions, user_liked_post, views = extract_post_info(
+            caption, location_url, location_name, location_id, lat, lng, imgs, imgdesc, tags, likes, commentscount, date, user_commented_list, user_comments, mentions, user_liked_post, views,video_url = extract_post_info(
                 browser, postlink)
 
             location = {
@@ -307,7 +307,8 @@ def extract_user_posts(browser, num_of_posts_to_do):
                     'count': commentscount,
                     'list': user_comments
                 },
-                'mentions': mentions
+                'mentions': mentions,
+                'video_url':video_url
             })
             user_commented_total_list = user_commented_total_list + user_commented_list
         except NoSuchElementException as err:
