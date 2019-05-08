@@ -11,7 +11,7 @@ from insgraph.util import extractor
 from insgraph.util.extractor import extract_posts
 from insgraph.util.extractor_posts import extract_post_info
 from insgraph.util.settings import Settings
-from insgraph.util.zjb_extractor import zjb_extract_tag_posts
+from insgraph.util.zjb_extractor import zjb_extract_tag_posts, zjb_search
 from insgraph.util.zjb_extractor_posts import zjb_extract_post_info
 from insgraph.utils import httputil
 from .util.account import login
@@ -97,6 +97,24 @@ def getTagList():
     return resp
 
 
+@bp.route('/search', methods=['GET'])
+def search():
+    searchcontent = request.args.get("content")
+    if searchcontent=="" or searchcontent is None:
+        return ""
+    try:
+      result=  zjb_search(browser, searchcontent)
+    except:
+        print("Error with searchcontent " + searchcontent)
+        sys.exit(1)
+
+    content = json.dumps(result)
+    resp = httputil.Response_headers(content)
+    return resp
+
+
+
+# //暂时没用
 @bp.route('/getPostByUrl', methods=['GET'])
 def getPostByUrl():
     url = request.args.get("url")

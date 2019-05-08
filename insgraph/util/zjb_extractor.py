@@ -14,8 +14,6 @@ from .settings import Settings
 from .util import web_adress_navigator
 
 
-
-
 def extract_user_posts(browser, num_of_posts_to_do):
     """Get all posts from user"""
     links2 = []
@@ -23,8 +21,6 @@ def extract_user_posts(browser, num_of_posts_to_do):
 
     try:
         body_elem = browser.find_element_by_tag_name('body')
-
-
 
         previouslen = 0
         breaking = 0
@@ -96,8 +92,8 @@ def extract_user_posts(browser, num_of_posts_to_do):
 
         try:
             caption, location_url, location_name, location_id, lat, lng, imgs, \
-            imgdesc, tags, likes, commentscount, date, user_commented_list, user_comments,\
-            mentions, user_liked_post, views,video_url = extract_post_info(
+            imgdesc, tags, likes, commentscount, date, user_commented_list, user_comments, \
+            mentions, user_liked_post, views, video_url = extract_post_info(
                 browser, postlink)
 
             location = {
@@ -127,7 +123,7 @@ def extract_user_posts(browser, num_of_posts_to_do):
                     'list': user_comments
                 },
                 'mentions': mentions,
-                'video_url':video_url
+                'video_url': video_url
             })
             user_commented_total_list = user_commented_total_list + user_commented_list
         except NoSuchElementException as err:
@@ -136,7 +132,6 @@ def extract_user_posts(browser, num_of_posts_to_do):
         except:
             logger.error("Could not get information from post: " + postlink)
     return post_infos, user_commented_total_list
-
 
 
 def zjb_extract_tag_posts(browser, tagname, limit_amount):
@@ -155,8 +150,21 @@ def zjb_extract_tag_posts(browser, tagname, limit_amount):
     try:
         post_infos, user_commented_total_list = extract_user_posts(browser, limit_amount)
     except:
-            logger.error("Couldn't get user posts.")
-
-
+        logger.error("Couldn't get user posts.")
 
     return post_infos
+
+
+def zjb_search(browser, content):
+    logger.info("Extracting extract_posts from " + content)
+    try:
+        user_link = "https://www.instagram.com/web/search/topsearch/?context=blended&query=" + content + "&rank_token=0.7952663657241419&include_reel=true"
+        response = browser.get(user_link)
+        jsonEle = browser.find_element_by_tag_name('pre')
+        jsonEle.text
+        logger.info(jsonEle.text)
+        return jsonEle.text
+    except PageNotFound404 as e:
+        raise NoInstaProfilePageFound(e)
+
+    return ""
