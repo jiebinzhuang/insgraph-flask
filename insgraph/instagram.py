@@ -11,7 +11,8 @@ from insgraph.util import extractor
 from insgraph.util.extractor import extract_posts
 from insgraph.util.extractor_posts import extract_post_info
 from insgraph.util.settings import Settings
-from insgraph.util.zjb_extractor import zjb_extract_tag_posts, zjb_search
+from insgraph.util.util import web_adress_navigator
+from insgraph.util.zjb_extractor import zjb_extract_tag_posts, zjb_search, zjb_extract_postlist
 from insgraph.util.zjb_extractor_posts import zjb_extract_post_info
 from insgraph.utils import httputil
 from .util.account import login
@@ -109,6 +110,46 @@ def search():
         sys.exit(1)
 
     content = json.dumps(result)
+    resp = httputil.Response_headers(content)
+    return resp
+
+
+@bp.route('/getPostPreList', methods=['GET'])
+def getPostPreList():
+    tagname = request.args.get("tagname")
+    amount = request.args.get("amount")
+    if amount == 0 or amount is None:
+        amount = 12
+    try:
+        user_link = "https://www.instagram.com/explore/tags/{}/".format(tagname)
+        web_adress_navigator(browser, user_link)
+
+        post_infos = zjb_extract_postlist(browser,int(amount))
+    except:
+        print("Error with user " + tagname)
+        sys.exit(1)
+
+    content = json.dumps(post_infos)
+    resp = httputil.Response_headers(content)
+    return resp
+
+
+@bp.route('/getUserPostIndex', methods=['GET'])
+def getUserPostIndex():
+    username = request.args.get("username")
+    amount = request.args.get("amount")
+    if amount == 0 or amount is None:
+        amount = 12
+    try:
+        user_link = "https://www.instagram.com/{}/".format(username)
+        web_adress_navigator(browser, user_link)
+
+        post_infos = zjb_extract_postlist(browser,int(amount))
+    except:
+        print("Error with user " + username)
+        sys.exit(1)
+
+    content = json.dumps(post_infos)
     resp = httputil.Response_headers(content)
     return resp
 
