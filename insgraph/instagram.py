@@ -9,7 +9,6 @@ from selenium.webdriver.chrome.options import Options
 
 from insgraph.util import extractor
 from insgraph.util.extractor import extract_posts
-from insgraph.util.extractor_posts import extract_post_info
 from insgraph.util.settings import Settings
 from insgraph.util.util import web_adress_navigator
 from insgraph.util.zjb_extractor import zjb_extract_tag_posts, zjb_search, zjb_extract_postlist
@@ -77,7 +76,7 @@ def getPostList():
 
     content = json.dumps(post_infos)
     resp = httputil.Response_headers(content)
-    return resp
+    return respgetUserPostIndex
 
 
 @bp.route('/getTagList', methods=['GET'])
@@ -155,7 +154,6 @@ def getUserPostIndex():
 
 
 
-# //暂时没用
 @bp.route('/getPostByUrl', methods=['GET'])
 def getPostByUrl():
     url = request.args.get("url")
@@ -163,7 +161,7 @@ def getPostByUrl():
     print('getPostList---Extracting information from ' + url)
     try:
         imgs, imgdesc,\
-         likes, commentscount, mentions, user_liked_post, views, video_url = zjb_extract_post_info(
+         likes, commentscount,  views, video_url = zjb_extract_post_info(
             browser, url)
 
 
@@ -172,16 +170,10 @@ def getPostByUrl():
 
             'imgs': imgs,
             'imgdesc': imgdesc,
-            'likes': {
-                'count': likes,
-                'list': user_liked_post
-            },
+            'likes':  likes,
             'views': views,
             'url': url,
-            'comments': {
-                'count': commentscount
-            },
-            'mentions': mentions,
+            'comments': commentscount,
             'video_url': video_url
         })
 

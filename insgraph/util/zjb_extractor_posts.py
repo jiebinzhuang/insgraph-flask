@@ -93,42 +93,12 @@ def zjb_extract_post_info(browser, postlink):
     # if likes is not known, it would cause errors to convert empty string to int
 
 
-    user_liked_list = []
-    mentions = []
     commentscount = 0
 
-
-    try:
-        mentions = extract_post_mentions(browser, post)
-    except:
-        logger.error("ERROR - getting Post Mentions function")
-
-    try:
-        user_liked_list = extract_post_likers(browser, post, postlink, likes)
-    except:
-        logger.error("ERROR - getting Post Likers function")
-
     return imgs, imgdesc, int(
-        likes), commentscount, mentions, user_liked_list, views,videourl
+        likes), commentscount, views,videourl
 
 
-
-def extract_post_mentions(browser, post):
-    mentions = []
-    if (Settings.mentions is False):
-        return mentions
-
-    try:
-        if post.find_elements_by_class_name('JYWcJ'):  # perhaps JYWcJ
-            mention_list = post.find_elements_by_class_name('JYWcJ')  # perhaps JYWcJ
-            for mention in mention_list:
-                user_mention = mention.get_attribute("href").split('/')
-                mentions.append(user_mention[3])
-            logger.info("mentions: " + str(len(mentions)))
-    except Exception as err:
-        logger.error("Error - getting mentions")
-        logger.error(err)
-    return mentions
 
 
 def extract_post_caption(user_comments, username):
