@@ -1,8 +1,6 @@
 """Methods to extract the data for the given usernames profile"""
-import datetime
 import math
-import sys
-from time import sleep, time
+from time import sleep
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys

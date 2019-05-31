@@ -76,7 +76,7 @@ def getPostList():
 
     content = json.dumps(post_infos)
     resp = httputil.Response_headers(content)
-    return respgetUserPostIndex
+    return resp
 
 
 @bp.route('/getTagList', methods=['GET'])
